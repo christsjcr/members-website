@@ -5,6 +5,7 @@ const clientId = import.meta.env.VITE_CLIENT_ID ?? process.env.CLIENT_ID;
 const secret = import.meta.env.VITE_CLIENT_SECRET ?? process.env.CLIENT_SECRET;
 const domain = import.meta.env.VITE_DOMAIN ?? "https://thejcr.co.uk";
 const publicDomain = import.meta.env.VITE_PUBLIC_DOMAIN ?? "https://thejcr.co.uk";
+
 const feedbackEmailAddress = import.meta.env.VITE_FEEDBACK_EMAIL_ADDRESS ?? process.env.FEEDBACK_EMAIL_ADDRESS;
 const feedbackEmailPassword = import.meta.env.VITE_FEEDBACK_EMAIL_PASSWORD ?? process.env.FEEDBACK_EMAIL_PASSWORD;
 
