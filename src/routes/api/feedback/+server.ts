@@ -1,10 +1,10 @@
-import type { RequestHandler } from "./$types"
+import type { RequestHandler } from "@sveltejs/kit";
 
 const clientId = import.meta.env.VITE_CLIENT_ID ?? process.env.CLIENT_ID;
 const domain = import.meta.env.VITE_DOMAIN ?? "https://members.thejcr.co.uk";
 
 const authURL = 'https://accounts.google.com/o/oauth2/v2/auth?hd=cam.ac.uk';
-const redirectURL = `${domain}/feedback/callback`;
+const redirectURL = `${domain}/api/feedback/callback`;
 
 
 const POST: RequestHandler = async (event) => {

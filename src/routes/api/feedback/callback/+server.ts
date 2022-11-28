@@ -1,4 +1,4 @@
-import type { RequestHandler } from "./$types"
+import type { RequestHandler } from "@sveltejs/kit";
 import nodemailer from "nodemailer";
 
 const clientId = import.meta.env.VITE_CLIENT_ID ?? process.env.CLIENT_ID;
@@ -10,7 +10,7 @@ const feedbackEmailPassword = import.meta.env.VITE_FEEDBACK_EMAIL_PASSWORD ?? pr
 
 const tokenURL = 'https://oauth2.googleapis.com/token';
 const userURL = 'https://openidconnect.googleapis.com/v1/userinfo';
-const redirectURL = `${domain}/feedback/callback`;
+const redirectURL = `${domain}/api/feedback/callback`;
 
 async function getAccessToken(code: string) {
 	const response = await fetch(tokenURL, {
