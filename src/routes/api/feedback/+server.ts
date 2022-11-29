@@ -1,4 +1,5 @@
 import type { RequestHandler } from "@sveltejs/kit";
+import { redirect, error, fromForm, type FeedbackRequest } from "./feedback-request";
 
 const clientId = import.meta.env.VITE_CLIENT_ID ?? process.env.CLIENT_ID;
 const domain = import.meta.env.VITE_DOMAIN ?? "https://members.thejcr.co.uk";
@@ -8,14 +9,19 @@ const redirectURL = `${domain}/api/feedback/callback`;
 
 
 const POST: RequestHandler = async (event) => {
-	console.log(event);
-	const state = event.url.searchParams.get('content') ?? "";
-	return new Response("", {
-		status: 302,
-		headers: {
-			location: `${authURL}&client_id=${clientId}&state=${encodeURIComponent(state)}&scope=profile email openid&response_type=code&redirect_uri=${encodeURIComponent(redirectURL)}`,
+	let request: FeedbackRequest;
+	try {
+		request = fromForm(await event.request.formData());
+	} catch (e) {
+		console.error(e);
+		if (e instanceof Error) {
+			return error(e.message);
+		} else {
+			return error("Check Logs!");
 		}
-	});
+	}
+	console.log(request);
+	return redirect(`${authURL}&client_id=${clientId}&state=${encodeURIComponent(JSON.stringify(request))}&scope=profile email openid&response_type=code&redirect_uri=${encodeURIComponent(redirectURL)}`);
 };
 
 export { POST };

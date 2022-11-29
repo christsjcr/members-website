@@ -1,13 +1,10 @@
 import type { RequestHandler } from "@sveltejs/kit";
-import nodemailer from "nodemailer";
+import { error, success, type FeedbackRequest } from "../feedback-request";
+import { send } from "./mail";
 
 const clientId = import.meta.env.VITE_CLIENT_ID ?? process.env.CLIENT_ID;
 const secret = import.meta.env.VITE_CLIENT_SECRET ?? process.env.CLIENT_SECRET;
 const domain = import.meta.env.VITE_DOMAIN ?? "https://thejcr.co.uk";
-const publicDomain = import.meta.env.VITE_PUBLIC_DOMAIN ?? "https://thejcr.co.uk";
-
-const feedbackEmailAddress = import.meta.env.VITE_FEEDBACK_EMAIL_ADDRESS ?? process.env.FEEDBACK_EMAIL_ADDRESS;
-const feedbackEmailPassword = import.meta.env.VITE_FEEDBACK_EMAIL_PASSWORD ?? process.env.FEEDBACK_EMAIL_PASSWORD;
 
 const tokenURL = 'https://oauth2.googleapis.com/token';
 const userURL = 'https://openidconnect.googleapis.com/v1/userinfo';
@@ -39,40 +36,12 @@ async function getUser(accessToken: string) {
 	return await response.json();
 }
 
-function redirect(location: string): Response {
-	return new Response("", {
-		status: 302,
-		headers: {
-			location
-		}
-	})
-}
-
-function error(message: string): Response {
-	return redirect(`${publicDomain}/feedback/error?message=${encodeURIComponent(message)}`)
-}
-
-async function send(message: string) {
-	const transport = nodemailer.createTransport({
-		host: "mail.postale.io",
-		port: 465,
-		auth: {
-			user: feedbackEmailAddress,
-			pass: feedbackEmailPassword,
-		},
-	});
-	const mailOptions = {
-		from: feedbackEmailAddress,
-		to: feedbackEmailAddress,
-		subject: "Feedback Test",
-		text: message,
-	};
-	await transport.sendMail(mailOptions);
-}
 
 const GET: RequestHandler = async (event) => {
+	const feedbackRequest = JSON.parse(decodeURIComponent(event.url.searchParams.get('state') ?? "")) as FeedbackRequest;
+		
 	const code = event.url.searchParams.get('code');
-
+	let sender: string;
 	try {
 		const accessToken = await getAccessToken(code ?? "");
 	
@@ -83,19 +52,21 @@ const GET: RequestHandler = async (event) => {
 		if (user == null) {
 			return error("Authentication failed!");
 		}
+
+		sender = user.email;
 	} catch(e) {
 		console.error(e);
 		return error("Authentication failed!");
 	}
 
 	try {
-		await send("Test Message");
+		await send(feedbackRequest, sender);
 	} catch (e) {
 		console.error(e);
 		return error("Failed to send email!");
 	}
 
-	return redirect(`${publicDomain}/feedback/success`);
+	return success();
 };
 
 export { GET };
