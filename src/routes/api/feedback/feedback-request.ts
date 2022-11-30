@@ -1,4 +1,5 @@
-const publicDomain = import.meta.env.VITE_PUBLIC_DOMAIN ?? "https://thejcr.co.uk";
+import { publicDomain, redirect } from "$lib/util";
+
 
 type FeedbackRequest = {
     shareEmail: boolean,
@@ -39,15 +40,6 @@ function fromForm(data: FormData): FeedbackRequest {
     };
 }
 
-function redirect(location: string): Response {
-	return new Response("", {
-		status: 302,
-		headers: {
-			location
-		}
-	})
-}
-
 function error(message: string): Response {
 	return redirect(`${publicDomain}/get-involved/feedback/error?reason=${encodeURIComponent(message)}`)
 }
@@ -56,4 +48,4 @@ function success(): Response {
     return redirect(`${publicDomain}/get-involved/feedback/success`);
 }
 
-export { type FeedbackRequest, fromForm, error, success, redirect };
+export { type FeedbackRequest, fromForm, error, success };

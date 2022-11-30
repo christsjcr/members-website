@@ -14,6 +14,7 @@
 		"@sveltejs/adapter-auto": "next",
 		"@sveltejs/kit": "next",
 		"@types/nodemailer": "^6.4.6",
+		"@types/sjcl": "^1.0.30",
 		"@typescript-eslint/eslint-plugin": "^5.27.0",
 		"@typescript-eslint/parser": "^5.27.0",
 		"eslint": "^8.16.0",
@@ -27,6 +28,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"nodemailer": "^6.8.0"
+		"nodemailer": "^6.8.0",
+		"sjcl": "^1.0.8"
 	}
 }

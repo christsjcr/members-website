@@ -1,12 +1,8 @@
 import type { RequestHandler } from "@sveltejs/kit";
-import { redirect, error, fromForm, type FeedbackRequest } from "./feedback-request";
-
-const clientId = import.meta.env.VITE_CLIENT_ID ?? process.env.CLIENT_ID;
-const domain = import.meta.env.VITE_DOMAIN ?? "https://members.thejcr.co.uk";
-
-const authURL = 'https://accounts.google.com/o/oauth2/v2/auth?hd=cam.ac.uk';
-const redirectURL = `${domain}/api/feedback/callback`;
-
+import { authRedirect } from "$lib/auth";
+import { success, error, fromForm, type FeedbackRequest } from "./feedback-request";
+import { decodeAuthCallback } from "$lib/auth";
+import { send } from "./mail";
 
 const POST: RequestHandler = async (event) => {
 	let request: FeedbackRequest;
@@ -21,7 +17,18 @@ const POST: RequestHandler = async (event) => {
 		}
 	}
 	console.log(request);
-	return redirect(`${authURL}&client_id=${clientId}&state=${encodeURIComponent(JSON.stringify(request))}&scope=profile email openid&response_type=code&redirect_uri=${encodeURIComponent(redirectURL)}`);
+	return authRedirect(`/api/feedback`, request);
 };
 
-export { POST };
+const GET: RequestHandler = async (event) => {
+	const { email: sender, state: feedbackRequest } = await decodeAuthCallback<FeedbackRequest>(event);
+	try {
+		await send(feedbackRequest, sender);
+	} catch (e) {
+		console.error(e);
+		return error("Failed to send email!");
+	}
+	return success();
+};
+
+export { POST, GET };
