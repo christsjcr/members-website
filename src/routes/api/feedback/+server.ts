@@ -90,7 +90,6 @@ const POST: RequestHandler = async (event) => {
 			return error("Check Logs!");
 		}
 	}
-	console.log(request);
 	return authRedirect(`/api/feedback`, request);
 };
 

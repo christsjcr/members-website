@@ -61,7 +61,6 @@ async function decodeUnencryptedCallback(event: RequestEvent): Promise<{ email: 
 	try {
 		const accessToken = await getAccessToken(code ?? "", event.url.pathname);
 		const user = await getUser(accessToken);
-		console.log(user);
 		email = user?.email;
 	} catch(e) {
 		console.error(e);

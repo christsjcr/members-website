@@ -34,7 +34,7 @@ function parseForm(data: FormData): FeedbackResponse {
 
 function error(reason: string): Response {
 	const title = "Something Went Wrong!";
-	const message = "Something wasn't quite right, and we couldn't submit your feedback. Please contact the webmaster if this issue persists.";
+	const message = "Something wasn't quite right, and we couldn't submit your response. Please contact the webmaster if this issue persists.";
 	return errorRedirect(title, message, reason, "/get-involved/feedback");
 }
 
@@ -51,8 +51,6 @@ async function sendResponse(request: FeedbackResponse, sender: string) {
     const recipient = prefixedRecipient.slice(65);
 
     const senderCRSID = sender.replace("@cam.ac.uk", "")
-
-    console.log(recipient);
 
     if (!Object.keys(valid_responders).includes(senderCRSID)) raise("You are not authorised to respond to messages!");
     const senderId = valid_responders[senderCRSID as keyof typeof valid_responders];
@@ -80,7 +78,6 @@ const POST: RequestHandler = async (event) => {
 			return error("Check Logs!");
 		}
 	}
-	console.log(request);
 	return authRedirect(`/api/feedback/respond`, request);
 };
 
