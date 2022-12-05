@@ -58,6 +58,7 @@ async function sendResponse(request: FeedbackResponse, sender: string) {
     const senderId = valid_responders[senderCRSID as keyof typeof valid_responders];
 
     const template = {
+        senderName: `${senderId}@thejcr.co.uk`,
         to: [recipient],
         subject: request.subject,
         replyTo: `${senderId}@thejcr.co.uk`,

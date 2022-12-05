@@ -68,6 +68,7 @@ async function sendFeedback(request: FeedbackRequest, sender: string) {
     }
     
     const template = {
+        senderName: "Anonymous Feedback",
         to: recipients.map(x => x + "@thejcr.co.uk"),
         subject: request.subject,
         replyTo: request.shareEmail ? sender : undefined,
