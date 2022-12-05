@@ -68,7 +68,7 @@ async function sendFeedback(request: FeedbackRequest, sender: string) {
     }
     
     const template = {
-        to: ["webmaster@thejcr.co.uk"],
+        to: recipients,
         subject: request.subject,
         replyTo: request.shareEmail ? sender : undefined,
         text: `${request.message}\n\n--------------\n\nRecipients: ${request.recipients.join(", ")}\n\n${replyInstructions}`
