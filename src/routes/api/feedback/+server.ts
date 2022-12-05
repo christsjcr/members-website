@@ -64,7 +64,7 @@ async function sendFeedback(request: FeedbackRequest, sender: string) {
     } else {
         const prefix = crypto.randomBytes(32).toString("hex");
         const encrypted = encodeURIComponent(encrypt(prefix + ":" + sender, "sender:"));
-        replyInstructions = `To respond to the sender, use the following link: ${publicDomain}/get-involved/feedback/respond?id=${encrypted}`;
+        replyInstructions = `To respond to the sender, use the following link: ${publicDomain}/get-involved/feedback/respond?subject=${encodeURIComponent(request.subject)}&recipient=${encrypted}`;
     }
     
     const template = {
