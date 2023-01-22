@@ -1,3 +1,5 @@
+// Committee members that can reveal the identities of anonymous form submissions,
+// all of which will be alerted if such a reveal occurs
 const valid_revealers = {
     ov235: "president",
     cl888: "vicepresident",
@@ -8,6 +10,7 @@ const valid_revealers = {
     mtw43: "webmaster",
 };
 
+// Committee members that can respond to form submissions
 const valid_responders = {
     ...valid_revealers,
     np578: "ents",
@@ -22,11 +25,13 @@ const valid_responders = {
     red50: "green",
 };
 
+// Committee members that can be selected under the "Share With: Specific officers only" option
+const valid_recipients = Array.from(new Set(Object.values(valid_responders)));
+valid_recipients.push("lgbt");
+
+// Committee members that will receive submissions of type "Share With: Committee"
 const misc_recipients = [
     "webmaster",
 ];
-
-const valid_recipients = Array.from(new Set(Object.values(valid_responders)));
-valid_recipients.push("lgbt");
 
 export { valid_revealers, valid_responders, valid_recipients, misc_recipients };
