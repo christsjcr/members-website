@@ -59,7 +59,7 @@ async function sendFeedback(request: FeedbackRequest, sender: string) {
         replyInstructions = `To respond to the sender, use the following link: ${publicDomain}/get-involved/feedback/respond?subject=${encodeURIComponent(request.subject)}&recipient=${encrypted}`;
     }
 
-    const recipientString = request.recipients.join(", ")
+    const recipientString = recipients.join(", ");
     
     const template = {
         senderName: "Anonymous Feedback",
@@ -70,7 +70,7 @@ async function sendFeedback(request: FeedbackRequest, sender: string) {
     };
 
     await send(template);
-    await send({ ...template, to: [sender], subject: `[SUBMITTED] ${template.subject}`, text: `${request.message}\n\n--------------\n\nRecipients: ${recipientString}` });
+    await send({ ...template, to: [sender], subject: `[SUBMITTED] ${template.subject}`, text: `${request.message}\n\n--------------\n\nRecipients: ${request.recipients.length > 0 ? recipientString : "Committee Members"}` });
     await log("Feedback Submitted", `Feedback was submitted to the following recipients: ${recipientString}`);
 }
 
