@@ -4,7 +4,7 @@ import { decodeAuthCallback } from "$lib/auth";
 import { send } from "$lib/mail";
 import { errorRedirect, raise, successRedirect } from "$lib/util";
 import { decrypt } from "$lib/encryption";
-import { valid_responders } from "../people";
+import { valid_revealers } from "../people";
 import { log } from "../log";
 
 type FeedbackReveal = {
@@ -33,13 +33,13 @@ function success(revealedEmail: string): Response {
 async function revealEmail(request: FeedbackReveal, sender: string): Promise<string> {
     const senderCRSID = sender.replace("@cam.ac.uk", "");
 
-    if (!Object.keys(valid_responders).includes(senderCRSID)) raise("You are not authorised to reveal messages!");
-    const senderId = valid_responders[senderCRSID as keyof typeof valid_responders];
+    if (!Object.keys(valid_revealers).includes(senderCRSID)) raise("You are not authorised to reveal messages!");
+    const senderId = valid_revealers[senderCRSID as keyof typeof valid_revealers];
 
     const prefixedEmail = decrypt<string>(request.encryptedEmail, "sender:");
     const revealedEmail = prefixedEmail.slice(65);
 
-    const recipients = Object.values(valid_responders).map(x => x + "@thejcr.co.uk");
+    const recipients = Object.values(valid_revealers).map(x => x + "@thejcr.co.uk");
 
     const template = {
         senderName: `Feedback Form Alert`,

@@ -6,6 +6,7 @@ import { errorRedirect, publicDomain, raise, successRedirect } from "$lib/util";
 import { encrypt } from "$lib/encryption";
 import crypto from "crypto";
 import { log } from "./log";
+import { valid_recipients } from "./people";
 
 type FeedbackRequest = {
     shareEmail: boolean,
@@ -13,26 +14,6 @@ type FeedbackRequest = {
     message: string,
     recipients: string[],
 };
-
-const valid_recipients = [
-    "president",
-    "vicepresident",
-    "treasurer",
-    "secretary",
-    "welfare-m",
-    "welfare-f",
-    "ents",
-    "firstyearrep",
-    "classact",
-    "edo",
-    "womens",
-    "intl",
-    "lgbt",
-    "access",
-    "facilities",
-    "green",
-    "webmaster"
-];
 
 function parseForm(data: FormData): FeedbackRequest {
     if (data.get('agreed') !== 'on') raise('Terms and conditions were not agreed to!');
