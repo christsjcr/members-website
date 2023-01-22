@@ -56,7 +56,7 @@ async function sendResponse(request: FeedbackResponse, sender: string) {
     const template = {
         senderName: `${senderId}@thejcr.co.uk`,
         to: [recipient],
-        subject: request.subject,
+        subject: `[RESPONSE] ${request.subject}`,
         replyTo: `${senderId}@thejcr.co.uk`,
         text: `${request.message}\n\n--------------\n\nThis response was sent via the anonymous feedback system, which allows Committee members to respond to your feedback without revealing your identity.\n\nYou can respond to this message by replying to this email directly (revealing your identity, if you haven't already), or by submitting another response to the anonymous feedback form.`
     };

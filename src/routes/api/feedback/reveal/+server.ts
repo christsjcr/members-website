@@ -42,7 +42,7 @@ async function revealEmail(request: FeedbackReveal, sender: string): Promise<str
     const recipients = Object.values(valid_revealers).map(x => x + "@thejcr.co.uk");
 
     const template = {
-        senderName: `Feedback Form Alert`,
+        senderName: `Feedback System`,
         to: recipients,
         subject: `Form Submission has been De-Anonymised`,
         text: `A submission reveal request was successfully made by ${senderId}.`
