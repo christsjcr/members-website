@@ -62,7 +62,7 @@ async function sendResponse(request: FeedbackResponse, sender: string) {
     };
 
     await send(template);
-    await send({ ...template, to: [`${senderId}@thejcr.co.uk`], subject: `[SENT] ${template.subject}` });
+    await send({ ...template, to: [`${senderId}@thejcr.co.uk`], subject: `[SENT] ${request.subject}` });
     await log("Feedback Response Sent", `A response to feedback was sent by the following member: ${senderId}`);
 }
 

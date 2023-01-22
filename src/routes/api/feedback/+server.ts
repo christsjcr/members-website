@@ -70,7 +70,7 @@ async function sendFeedback(request: FeedbackRequest, sender: string) {
     };
 
     await send(template);
-    await send({ ...template, to: [sender], subject: `[SUBMITTED] ${template.subject}`, text: `${request.message}\n\n--------------\n\nRecipients: ${request.recipients.length > 0 ? recipientString : "Committee Members"}` });
+    await send({ ...template, to: [sender], subject: `[SUBMITTED] ${request.subject}`, text: `${request.message}\n\n--------------\n\nRecipients: ${request.recipients.length > 0 ? recipientString : "Committee Members"}` });
     await log("Feedback Submitted", `Feedback was submitted to the following recipients: ${recipientString}`);
 }
 
