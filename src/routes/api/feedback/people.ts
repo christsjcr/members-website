@@ -18,7 +18,7 @@ const valid_responders = {
     mtw43: "webmaster",
 };
 
-const valid_recipients = new Set(Object.values(valid_responders));
-valid_recipients.add("lgbt");
+const valid_recipients = Array.from(new Set(Object.values(valid_responders)));
+valid_recipients.push("lgbt");
 
 export { valid_responders, valid_recipients };

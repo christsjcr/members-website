@@ -5,6 +5,7 @@ import { send } from "$lib/mail";
 import { errorRedirect, raise, successRedirect } from "$lib/util";
 import { decrypt } from "$lib/encryption";
 import { valid_responders } from "../people";
+import { log } from "../log";
 
 type FeedbackReveal = {
     encryptedEmail: string,
@@ -58,6 +59,11 @@ const POST: RequestHandler = async (event) => {
 		request = parseForm(await event.request.formData());
 	} catch (e) {
 		console.error(e);
+		try {
+            await log("Reveal POST Failed", `Error: ${e}`);
+        } catch (f) {
+            console.error(f);
+        }
 		if (e instanceof Error) {
 			return error(e.message);
 		} else {
@@ -74,6 +80,11 @@ const GET: RequestHandler = async (event) => {
 		revealed = await revealEmail(feedbackResponse, sender);
 	} catch (e) {
 		console.error(e);
+		try {
+            await log("Reveal GET Failed", `Error: ${e}`);
+        } catch (f) {
+            console.error(f);
+        }
 		return error("Failed to send email!");
 	}
 	return success(revealed);

@@ -5,6 +5,7 @@ import { send } from "../../../lib/mail";
 import { errorRedirect, publicDomain, raise, successRedirect } from "$lib/util";
 import { encrypt } from "$lib/encryption";
 import crypto from "crypto";
+import { log } from "./log";
 
 type FeedbackRequest = {
     shareEmail: boolean,
@@ -77,16 +78,19 @@ async function sendFeedback(request: FeedbackRequest, sender: string) {
         const encrypted = encodeURIComponent(encrypt(prefix + ":" + sender, "sender:"));
         replyInstructions = `To respond to the sender, use the following link: ${publicDomain}/get-involved/feedback/respond?subject=${encodeURIComponent(request.subject)}&recipient=${encrypted}`;
     }
+
+    const recipientString = request.recipients.join(", ")
     
     const template = {
         senderName: "Anonymous Feedback",
         to: recipients.map(x => x + "@thejcr.co.uk"),
         subject: request.subject,
         replyTo: request.shareEmail ? sender : undefined,
-        text: `${request.message}\n\n--------------\n\nRecipients: ${request.recipients.join(", ")}\n\n${replyInstructions}`
+        text: `${request.message}\n\n--------------\n\nRecipients: ${recipientString}\n\n${replyInstructions}`
     };
 
     await send(template);
+    await log("Feedback Submitted", `Feedback was submitted to the following recipients: ${recipientString}`);
 }
 
 const POST: RequestHandler = async (event) => {
@@ -94,7 +98,12 @@ const POST: RequestHandler = async (event) => {
 	try {
 		request = parseForm(await event.request.formData());
 	} catch (e) {
-		console.error(e);
+        console.error(e);
+        try {
+            await log("Feedback POST Failed", `Error: ${e}`);
+        } catch (f) {
+            console.error(f);
+        }
 		if (e instanceof Error) {
 			return error(e.message);
 		} else {
@@ -109,7 +118,12 @@ const GET: RequestHandler = async (event) => {
 	try {
 		await sendFeedback(feedbackRequest, sender);
 	} catch (e) {
-		console.error(e);
+        console.error(e);
+        try {
+            await log("Feedback GET Failed", `Error: ${e}`);
+        } catch (f) {
+            console.error(f);
+        }
 		return error("Failed to send email!");
 	}
 	return success();

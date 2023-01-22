@@ -5,6 +5,7 @@ import { send } from "$lib/mail";
 import { errorRedirect, raise, successRedirect } from "$lib/util";
 import { decrypt } from "$lib/encryption";
 import { valid_responders } from "../people";
+import { log } from "../log";
 
 
 type FeedbackResponse = {
@@ -61,6 +62,7 @@ async function sendResponse(request: FeedbackResponse, sender: string) {
     };
 
     await send(template);
+    await log("Feedback Response Sent", `A response to feedback was sent by the following member: ${senderId}`);
 }
 
 const POST: RequestHandler = async (event) => {
@@ -68,7 +70,12 @@ const POST: RequestHandler = async (event) => {
 	try {
 		request = parseForm(await event.request.formData());
 	} catch (e) {
-		console.error(e);
+        console.error(e);
+        try {
+            await log("Respond POST Failed", `Error: ${e}`);
+        } catch (f) {
+            console.error(f);
+        }
 		if (e instanceof Error) {
 			return error(e.message);
 		} else {
@@ -83,7 +90,12 @@ const GET: RequestHandler = async (event) => {
 	try {
 		await sendResponse(feedbackResponse, sender);
 	} catch (e) {
-		console.error(e);
+        console.error(e);
+        try {
+            await log("Respond GET Failed", `Error: ${e}`);
+        } catch (f) {
+            console.error(f);
+        }
 		return error("Failed to send email!");
 	}
 	return success();
