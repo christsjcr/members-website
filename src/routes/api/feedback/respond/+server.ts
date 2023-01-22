@@ -4,16 +4,13 @@ import { decodeAuthCallback } from "$lib/auth";
 import { send } from "$lib/mail";
 import { errorRedirect, raise, successRedirect } from "$lib/util";
 import { decrypt } from "$lib/encryption";
+import { valid_responders } from "../people";
 
 
 type FeedbackResponse = {
     subject: string,
     message: string,
     encryptedRecipient: string,
-};
-
-const valid_responders = {
-    mtw43: "webmaster",
 };
 
 function parseForm(data: FormData): FeedbackResponse {

@@ -14,12 +14,23 @@ type FeedbackRequest = {
 };
 
 const valid_recipients = [
+    "president",
+    "vicepresident",
+    "treasurer",
+    "secretary",
     "welfare-m",
     "welfare-f",
-    "lgbt",
+    "ents",
+    "firstyearrep",
+    "classact",
     "edo",
-    "disabilities",
-    "classact"
+    "womens",
+    "intl",
+    "lgbt",
+    "access",
+    "facilities",
+    "green",
+    "webmaster"
 ];
 
 function parseForm(data: FormData): FeedbackRequest {
