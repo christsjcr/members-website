@@ -6,7 +6,7 @@ import { errorRedirect, publicDomain, raise, successRedirect } from "$lib/util";
 import { encrypt } from "$lib/encryption";
 import crypto from "crypto";
 import { log } from "./log";
-import { valid_recipients } from "./people";
+import { misc_recipients, valid_recipients } from "./people";
 
 type FeedbackRequest = {
     shareEmail: boolean,
@@ -47,8 +47,7 @@ function success(): Response {
 }
 
 async function sendFeedback(request: FeedbackRequest, sender: string) {
-    const recipients = request.recipients;
-    if (recipients.length == 0) recipients.push("webmaster");
+    const recipients = request.recipients.length > 0 ? request.recipients : misc_recipients;
 
     let replyInstructions: string;
 

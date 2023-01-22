@@ -20,10 +20,13 @@ const valid_responders = {
     yld21: "access",
     mr936: "facilities",
     red50: "green",
-
 };
+
+const misc_recipients = [
+    "webmaster",
+];
 
 const valid_recipients = Array.from(new Set(Object.values(valid_responders)));
 valid_recipients.push("lgbt");
 
-export { valid_revealers, valid_responders, valid_recipients };
+export { valid_revealers, valid_responders, valid_recipients, misc_recipients };
