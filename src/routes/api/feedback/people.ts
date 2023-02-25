@@ -29,9 +29,19 @@ const valid_responders = {
 const valid_recipients = Array.from(new Set(Object.values(valid_responders)));
 valid_recipients.push("lgbt");
 
-// Committee members that will receive submissions of type "Share With: Committee"
-const misc_recipients = [
-    "webmaster",
+const exec_recipients = [
+    "president",
+    "vicepresident",
+    "welfare-f",
 ];
 
-export { valid_revealers, valid_responders, valid_recipients, misc_recipients };
+
+// Committee members that will receive submissions of type "Share With: Committee"
+const committee_recipients = [
+    ...exec_recipients,
+    "webmaster",
+    "womens",
+    "ents"
+];
+
+export { valid_revealers, valid_responders, valid_recipients, committee_recipients, exec_recipients };

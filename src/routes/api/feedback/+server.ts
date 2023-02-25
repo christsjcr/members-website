@@ -6,13 +6,14 @@ import { errorRedirect, publicDomain, raise, successRedirect } from "$lib/util";
 import { encrypt } from "$lib/encryption";
 import crypto from "crypto";
 import { log } from "./log";
-import { misc_recipients, valid_recipients } from "./people";
+import { committee_recipients, exec_recipients, valid_recipients } from "./people";
 
 type FeedbackRequest = {
     shareEmail: boolean,
     subject: string,
     message: string,
     recipients: string[],
+    execOnly: boolean,
 };
 
 function parseForm(data: FormData): FeedbackRequest {
@@ -30,7 +31,8 @@ function parseForm(data: FormData): FeedbackRequest {
         shareEmail: data.get("anonymous") !== 'on',
         subject,
         message,
-        recipients
+        recipients,
+        execOnly: data.get('exec') === 'on'
     };
 }
 
@@ -47,7 +49,9 @@ function success(): Response {
 }
 
 async function sendFeedback(request: FeedbackRequest, sender: string) {
-    const recipients = request.recipients.length > 0 ? request.recipients : misc_recipients;
+    const recipients = request.recipients.length > 0 ?
+        request.recipients :
+        (request.execOnly ? exec_recipients : committee_recipients);
 
     let replyInstructions: string;
 
