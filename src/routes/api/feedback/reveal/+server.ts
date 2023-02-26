@@ -5,7 +5,7 @@ import { send } from "$lib/mail";
 import { errorRedirect, raise, successRedirect } from "$lib/util";
 import { decrypt } from "$lib/encryption";
 import { valid_revealers } from "../people";
-import { log } from "../log";
+import { logError } from "../log";
 
 type FeedbackReveal = {
     encryptedEmail: string,
@@ -54,13 +54,14 @@ async function revealEmail(request: FeedbackReveal, sender: string): Promise<str
 }
 
 const POST: RequestHandler = async (event) => {
-	let request: FeedbackReveal;
+    const copiedRequest = event.request.clone();
+    let request: FeedbackReveal;
 	try {
 		request = parseForm(await event.request.formData());
 	} catch (e) {
 		console.error(e);
 		try {
-            await log("Reveal POST Failed", `Error: ${e}`);
+            await logError("Reveal POST Failed", e, copiedRequest);
         } catch (f) {
             console.error(f);
         }
@@ -74,6 +75,7 @@ const POST: RequestHandler = async (event) => {
 };
 
 const GET: RequestHandler = async (event) => {
+    const copiedRequest = event.request.clone();
 	const { email: sender, state: feedbackResponse } = await decodeAuthCallback<FeedbackReveal>(event);
     let revealed: string;
     try {
@@ -81,7 +83,7 @@ const GET: RequestHandler = async (event) => {
 	} catch (e) {
 		console.error(e);
 		try {
-            await log("Reveal GET Failed", `Error: ${e}`);
+            await logError("Reveal GET Failed", e, copiedRequest);
         } catch (f) {
             console.error(f);
         }

@@ -5,7 +5,7 @@ import { send } from "../../../lib/mail";
 import { errorRedirect, publicDomain, raise, successRedirect } from "$lib/util";
 import { encrypt } from "$lib/encryption";
 import crypto from "crypto";
-import { log } from "./log";
+import { log, logError } from "./log";
 import { committee_recipients, exec_recipients, valid_recipients } from "./people";
 
 type FeedbackRequest = {
@@ -20,6 +20,7 @@ function parseForm(data: FormData): FeedbackRequest {
     if (data.get('agreed') !== 'on') raise('Terms and conditions were not agreed to!');
     const message = data.get("message") as string ?? raise('No message!');
     const subject = data.get("subject") as string ?? raise('No subject!');
+    if (subject === 'TESTERROR') raise('Test error triggered!');
     if (message.length == 0) raise("Message was empty!");
     if (subject.length == 0) raise("Subject was empty!");
 
@@ -79,13 +80,14 @@ async function sendFeedback(request: FeedbackRequest, sender: string) {
 }
 
 const POST: RequestHandler = async (event) => {
+    const copiedRequest = event.request.clone();
 	let request: FeedbackRequest;
 	try {
 		request = parseForm(await event.request.formData());
 	} catch (e) {
         console.error(e);
         try {
-            await log("Feedback POST Failed", `Error: ${e}`);
+            await logError("Feedback POST Failed", e, copiedRequest);
         } catch (f) {
             console.error(f);
         }
@@ -99,13 +101,14 @@ const POST: RequestHandler = async (event) => {
 };
 
 const GET: RequestHandler = async (event) => {
+    const copiedRequest = event.request.clone();
 	const { email: sender, state: feedbackRequest } = await decodeAuthCallback<FeedbackRequest>(event);
 	try {
 		await sendFeedback(feedbackRequest, sender);
 	} catch (e) {
         console.error(e);
         try {
-            await log("Feedback GET Failed", `Error: ${e}`);
+            await logError("Feedback GET Failed", e, copiedRequest);
         } catch (f) {
             console.error(f);
         }

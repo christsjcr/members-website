@@ -5,7 +5,7 @@ import { send } from "$lib/mail";
 import { errorRedirect, raise, successRedirect } from "$lib/util";
 import { decrypt } from "$lib/encryption";
 import { valid_responders } from "../people";
-import { log } from "../log";
+import { log, logError } from "../log";
 
 
 type FeedbackResponse = {
@@ -67,13 +67,14 @@ async function sendResponse(request: FeedbackResponse, sender: string) {
 }
 
 const POST: RequestHandler = async (event) => {
+    const copiedRequest = event.request.clone();
 	let request: FeedbackResponse;
 	try {
 		request = parseForm(await event.request.formData());
 	} catch (e) {
         console.error(e);
         try {
-            await log("Respond POST Failed", `Error: ${e}`);
+            await logError("Respond POST Failed", e,  copiedRequest);
         } catch (f) {
             console.error(f);
         }
@@ -87,13 +88,14 @@ const POST: RequestHandler = async (event) => {
 };
 
 const GET: RequestHandler = async (event) => {
+    const copiedRequest = event.request.clone();
 	const { email: sender, state: feedbackResponse } = await decodeAuthCallback<FeedbackResponse>(event);
 	try {
 		await sendResponse(feedbackResponse, sender);
 	} catch (e) {
         console.error(e);
         try {
-            await log("Respond GET Failed", `Error: ${e}`);
+            await logError("Respond GET Failed", e, copiedRequest);
         } catch (f) {
             console.error(f);
         }
