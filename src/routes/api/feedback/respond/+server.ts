@@ -5,7 +5,7 @@ import { send } from "$lib/mail";
 import { errorRedirect, raise, successRedirect } from "$lib/util";
 import { decrypt } from "$lib/encryption";
 import { valid_responders } from "../people";
-import { log, logError } from "../log";
+import { genericErrorMessage, log, logError } from "../log";
 
 
 type FeedbackResponse = {
@@ -32,7 +32,7 @@ function parseForm(data: FormData): FeedbackResponse {
 
 function error(reason: string): Response {
 	const title = "Something Went Wrong!";
-	const message = "Something wasn't quite right, and we couldn't submit your response. Please contact the webmaster if this issue persists.";
+	const message = `Something wasn't quite right, and we couldn't submit your response. ${genericErrorMessage}`;
 	return errorRedirect(title, message, reason, "/get-involved/feedback");
 }
 

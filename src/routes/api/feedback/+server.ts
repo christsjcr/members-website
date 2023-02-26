@@ -5,7 +5,7 @@ import { send } from "../../../lib/mail";
 import { errorRedirect, publicDomain, raise, successRedirect } from "$lib/util";
 import { encrypt } from "$lib/encryption";
 import crypto from "crypto";
-import { log, logError } from "./log";
+import { genericErrorMessage, log, logError } from "./log";
 import { committee_recipients, exec_recipients, valid_recipients } from "./people";
 
 type FeedbackRequest = {
@@ -39,7 +39,7 @@ function parseForm(data: FormData): FeedbackRequest {
 
 function error(reason: string): Response {
 	const title = "Something Went Wrong!";
-	const message = "Something wasn't quite right, and we couldn't submit your feedback. Please contact the webmaster if this issue persists.";
+	const message = `Something wasn't quite right, and we couldn't submit your feedback. ${genericErrorMessage}`;
 	return errorRedirect(title, message, reason, "/get-involved/feedback");
 }
 

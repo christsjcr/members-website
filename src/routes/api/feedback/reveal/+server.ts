@@ -5,7 +5,7 @@ import { send } from "$lib/mail";
 import { errorRedirect, raise, successRedirect } from "$lib/util";
 import { decrypt } from "$lib/encryption";
 import { valid_revealers } from "../people";
-import { logError } from "../log";
+import { genericErrorMessage, logError } from "../log";
 
 type FeedbackReveal = {
     encryptedEmail: string,
@@ -20,7 +20,7 @@ function parseForm(data: FormData): FeedbackReveal {
 
 function error(reason: string): Response {
 	const title = "Something Went Wrong!";
-	const message = "Something wasn't quite right, and we couldn't reveal the sender of this message. Please contact the webmaster if this issue persists.";
+	const message = `Something wasn't quite right, and we couldn't reveal the sender of this message. ${genericErrorMessage}`;
 	return errorRedirect(title, message, reason, "/get-involved/feedback");
 }
 

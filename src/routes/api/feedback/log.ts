@@ -1,6 +1,8 @@
 import { send } from "$lib/mail";
 import util from "util";
 
+const genericErrorMessage = "An error report (with sensitive details redacted) has been sent to the webmaster, who will do their best to fix the issue as soon as possible. Please try again in a couple of days, and contact the webmaster if this issue persists."
+
 async function log(subject: string, body: string) {
     const recipients = ["webmaster"];
 
@@ -30,4 +32,4 @@ async function logError(subject: string, error: unknown, requestCopy: Request) {
     await log(subject, `${message}\n\n Stack: ${stack}\n\n Body: ${body}\n\nRequest: ${util.inspect(requestCopy, { showHidden: true, depth: null })}`)
 }
 
-export { log, logError };
+export { log, logError, genericErrorMessage };
