@@ -27,7 +27,7 @@ async function logError(subject: string, error: unknown, requestCopy: Request) {
         stack = "undefined";
     }
 
-    log(subject, `${message}\n\n Stack: ${stack}\n\n Body: ${body}\n\nRequest: ${util.inspect(requestCopy, { showHidden: true, depth: null })}`)
+    await log(subject, `${message}\n\n Stack: ${stack}\n\n Body: ${body}\n\nRequest: ${util.inspect(requestCopy, { showHidden: true, depth: null })}`)
 }
 
 export { log, logError };
