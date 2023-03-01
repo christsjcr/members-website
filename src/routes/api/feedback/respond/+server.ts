@@ -12,12 +12,14 @@ type FeedbackResponse = {
     subject: string,
     message: string,
     encryptedRecipient: string,
+    notify: string[],
 };
 
 function parseForm(data: FormData): FeedbackResponse {
     const subject = data.get("subject") as string ?? raise('No subject!');
     const message = data.get("message") as string ?? raise('No message!');
     const encryptedRecipient = data.get("recipient") as string ?? raise('No recipient!');
+    const notify = data.getAll("notify") as string[];
 
     if (message.length == 0) raise("Message was empty!");
     if (subject.length == 0) raise("Subject was empty!");
@@ -25,7 +27,8 @@ function parseForm(data: FormData): FeedbackResponse {
     return {
         subject,
         message,
-        encryptedRecipient
+        encryptedRecipient,
+        notify
     };
 }
 
@@ -63,7 +66,11 @@ async function sendResponse(request: FeedbackResponse, sender: string) {
 
     await send(template);
     await send({ ...template, to: [`${senderId}@thejcr.co.uk`], subject: `[SENT] ${request.subject}` });
-    await log("Feedback Response Sent", `A response to feedback was sent by the following member: ${senderId}`);
+    await send({ ...template, to: request.notify.map(x => `${x}@thejcr.co.uk`), subject: `[RESPONSE] ${request.subject}`, text: `A response to the feedback with subject '${request.subject}' was sent by ${sender}.` })
+
+    if (!request.notify.includes("webmaster")) {
+        await log("Feedback Response Sent", `A response to feedback was sent by the following member: ${senderId}`);
+    }
 }
 
 const POST: RequestHandler = async (event) => {
