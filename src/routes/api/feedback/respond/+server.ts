@@ -73,7 +73,7 @@ async function sendResponse(request: FeedbackResponse, sender: string) {
         await send({ ...template, to: notifyEmails, subject: `[RESPONSE] ${request.subject}`, text: `A response to the feedback with subject "${request.subject}" was sent by ${senderId}.` })
     }
 
-    await log("Feedback Response Sent", `A response to feedback was sent by the following member: ${senderId}`);
+    await log("Feedback Response Sent", `A response to feedback was sent by the following member: ${senderId}.\n\n The following members were also notified: ${notifyEmails.join(", ")}.`);
 }
 
 const POST: RequestHandler = async (event) => {
