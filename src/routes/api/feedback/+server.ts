@@ -56,7 +56,7 @@ async function sendFeedback(request: FeedbackRequest, sender: string) {
 
     const prefix = crypto.randomBytes(32).toString("hex");
     const encrypted = encodeURIComponent(encrypt(prefix + ":" + sender, "sender:"));
-    const alsoNotify = recipients.map(x => `&notify=${x}`).join();
+    const alsoNotify = recipients.map(x => `&notify=${x}`).join("");
 
     let replyInstructions = `To respond to the sender and notify the original recipients of this feedback (without revealing the contents of the response), use the following link: ${publicDomain}/get-involved/feedback/respond?subject=${encodeURIComponent(request.subject)}&recipient=${encrypted}${alsoNotify}`;
 

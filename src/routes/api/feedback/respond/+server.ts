@@ -67,15 +67,11 @@ async function sendResponse(request: FeedbackResponse, sender: string) {
     await send(template);
     await send({ ...template, to: [`${senderId}@thejcr.co.uk`], subject: `[SENT] ${request.subject}` });
 
-    const notifyEmails = request.notify.filter(x => x !== senderId).map(x => `${x}@thejcr.co.uk`)
-
-    console.log(notifyEmails);
+    const notifyEmails = request.notify.filter(x => x !== senderId).map(x => `${x}@thejcr.co.uk`);
 
     if (notifyEmails.length > 0) {
-        await send({ ...template, to: notifyEmails, subject: `[RESPONSE] ${request.subject}`, text: `A response to the feedback with subject "${request.subject}" was sent by ${senderId}.` })
+        await send({ ...template, to: notifyEmails, subject: `[RESPONSE] ${request.subject}`, text: `A response to the feedback with subject "${request.subject}" was sent by ${senderId}.` });
     }
-
-    console.log("Notified!");
 
     await log("Feedback Response Sent", `A response to feedback was sent by the following member: ${senderId}.\n\n The following members were also notified: ${notifyEmails.join(", ")}.`);
 }
