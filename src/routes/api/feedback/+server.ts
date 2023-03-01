@@ -54,15 +54,14 @@ async function sendFeedback(request: FeedbackRequest, sender: string) {
         request.recipients :
         (request.execOnly ? exec_recipients : committee_recipients);
 
-    let replyInstructions: string;
+    const prefix = crypto.randomBytes(32).toString("hex");
+    const encrypted = encodeURIComponent(encrypt(prefix + ":" + sender, "sender:"));
+    const alsoNotify = recipients.map(x => `&notify=${x}`).join();
+
+    let replyInstructions = `To respond to the sender and notify the original recipients of this feedback (without revealing the contents of the response), use the following link: ${publicDomain}/get-involved/feedback/respond?subject=${encodeURIComponent(request.subject)}&recipient=${encrypted}${alsoNotify}`;
 
     if (request.shareEmail) {
-        replyInstructions = 'To respond to the sender, simply reply to this email (the original sender is in the "Reply-To" header).';
-    } else {
-        const prefix = crypto.randomBytes(32).toString("hex");
-        const encrypted = encodeURIComponent(encrypt(prefix + ":" + sender, "sender:"));
-        const alsoNotify = recipients.map(x => `&notify=${x}`).join();
-        replyInstructions = `To respond to the sender, use the following link: ${publicDomain}/get-involved/feedback/respond?subject=${encodeURIComponent(request.subject)}&recipient=${encrypted}${alsoNotify}`;
+        replyInstructions += `\n\nThe sender chose to reveal their email: ${sender}. You can also respond to them directly by replying to this email, although this won't notify the original recipients of this feedback.`;
     }
 
     const recipientString = recipients.join(", ");
