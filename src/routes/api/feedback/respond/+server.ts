@@ -66,11 +66,14 @@ async function sendResponse(request: FeedbackResponse, sender: string) {
 
     await send(template);
     await send({ ...template, to: [`${senderId}@thejcr.co.uk`], subject: `[SENT] ${request.subject}` });
-    await send({ ...template, to: request.notify.map(x => `${x}@thejcr.co.uk`), subject: `[RESPONSE] ${request.subject}`, text: `A response to the feedback with subject '${request.subject}' was sent by ${sender}.` })
 
-    if (!request.notify.includes("webmaster")) {
-        await log("Feedback Response Sent", `A response to feedback was sent by the following member: ${senderId}`);
+    const notifyEmails = request.notify.filter(x => x !== senderId).map(x => `${x}@thejcr.co.uk`)
+
+    if (notifyEmails.length > 0) {
+        await send({ ...template, to: notifyEmails, subject: `[RESPONSE] ${request.subject}`, text: `A response to the feedback with subject "${request.subject}" was sent by ${senderId}.` })
     }
+
+    await log("Feedback Response Sent", `A response to feedback was sent by the following member: ${senderId}`);
 }
 
 const POST: RequestHandler = async (event) => {
