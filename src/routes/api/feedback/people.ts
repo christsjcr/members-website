@@ -2,7 +2,7 @@
 // all of which will be alerted if such a reveal occurs
 const valid_revealers = {
     sim36: "president",
-    // "vicepresident"
+    mm2660: "vicepresident",
     bjr43: "treasurer",
     cd796: "secretary",
     za325: "welfare-m",
@@ -13,7 +13,7 @@ const valid_revealers = {
 // Committee members that can respond to form submissions
 const valid_responders = {
     ...valid_revealers,
-    // "ents"
+    rl743: "ents",
     fm597: "firstyearrep",
     mc2374: "classact",
     mda54: "edo",
