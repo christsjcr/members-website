@@ -41,6 +41,7 @@ const committee_recipients = [
     "webmaster",
     "womens",
     "ents"
+    "facilities"
 ];
 
 export { valid_revealers, valid_responders, valid_recipients, committee_recipients, exec_recipients };
