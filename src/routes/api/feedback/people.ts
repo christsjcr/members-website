@@ -40,8 +40,8 @@ const committee_recipients = [
     ...exec_recipients,
     "webmaster",
     "womens",
-    "ents"
-    "facilities"
+    "ents",
+    "facilities",
 ];
 
 export { valid_revealers, valid_responders, valid_recipients, committee_recipients, exec_recipients };
