@@ -14,7 +14,9 @@ const valid_revealers = {
 const valid_responders = {
     ...valid_revealers,
     rl743: "ents",
+    am3215: "ents",
     fm597: "firstyearrep",
+    shw48: "firstyearrep",
     mc2374: "classact",
     mda54: "edo",
     eh721: "womens",
@@ -36,12 +38,6 @@ const exec_recipients = [
 
 
 // Committee members that will receive submissions of type "Share With: Committee"
-const committee_recipients = [
-    ...exec_recipients,
-    "webmaster",
-    "womens",
-    "ents",
-    "facilities",
-];
+const committee_recipients = valid_recipients;
 
 export { valid_revealers, valid_responders, valid_recipients, committee_recipients, exec_recipients };
